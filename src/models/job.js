@@ -30,9 +30,9 @@ const jobSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    company: {
+    owner: {
       type: mongoose.Schema.Types.ObjectId,
-      // required: true,
+      required: true,
       ref: "Company",
     },
   },

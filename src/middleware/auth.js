@@ -4,7 +4,7 @@ const Company = require("../models/company");
 async function auth(req, res, next) {
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
-    const decoded = jwt.verify(token, "secretkey");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const company = await Company.findOne({
       _id: decoded._id,
       "tokens.token": token,

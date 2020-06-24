@@ -85,7 +85,7 @@ companySchema.statics.findByCredentials = async function (email, password) {
 companySchema.methods.generateAuthToken = async function () {
   const company = this;
 
-  const token = jwt.sign({ _id: company._id }, "secretkey");
+  const token = jwt.sign({ _id: company._id }, process.env.JWT_SECRET);
   company.tokens = company.tokens.concat({ token });
   await company.save();
 

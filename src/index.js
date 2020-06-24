@@ -6,7 +6,7 @@ require("./db/mongoose");
 const companyRoutes = require("./routers/company");
 const jobRoutes = require("./routers/job");
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
 
 app.use(express.json());
 app.use(companyRoutes);
