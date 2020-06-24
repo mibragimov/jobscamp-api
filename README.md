@@ -8,6 +8,8 @@ This is the Jobscamp API built with Node.js and Express framework.
 * Supports up to 100 requests per hour
 * CRUD operations are allowed
 
+Documentation can be found [here](https://jobscamp-api.herokuapp.com/)
+
 ## POST
 
 Create new job. It requires auth token that can be accessed when
