@@ -9,6 +9,10 @@ const jobRoutes = require("./routers/job");
 
 const port = process.env.PORT;
 app.use(express.static(path.join(__dirname, "../public")));
+
+app.get("/", (req, res) => {
+  res.send();
+});
 app.use(express.json());
 app.use(companyRoutes);
 app.use(jobRoutes);

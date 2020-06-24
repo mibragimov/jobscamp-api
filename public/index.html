@@ -4,14 +4,284 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jobscamp API docs</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <h2>This is the Jobscamp API.</h2>
-    <p><b>Important details:</b></p>
-    <ul>
-      <li>No need to use CORS proxy or API key</li>
-      <li>Supports up to 100 requests per hour</li>
-      <li>CRUD operations are allowed</li>
-    </ul>
+    <div class="container">
+      <h1>Jobscamp API v1 documentation</h1>
+      <p class="description">
+        This is the Jobscamp API built with Node.js and Express framework.
+      </p>
+      <h4>Important details:</h4>
+      <ul>
+        <li>No need to use CORS proxy or API key</li>
+        <li>Supports up to 100 requests per hour</li>
+        <li>CRUD operations are allowed</li>
+      </ul>
+      <div class="divider"></div>
+      <h2>POST</h2>
+      <p class="description">
+        Create new job. It requires auth token that can be accessed when
+        registered as a company.
+      </p>
+      <p>Path: <code>https://jobscamp-api.herokuapp.com/jobs</code></p>
+      <h3>Request Body</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Required</th>
+          </tr>
+          <tr>
+            <td>role</td>
+            <td>String</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>type</td>
+            <td>String</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>skills</td>
+            <td>String</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>location</td>
+            <td>String</td>
+            <td>Yes</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Example:
+        <code>
+          https://jobscamp-api.herokuapp.com/jobs/${job},${token}
+        </code>
+      </p>
+      <div class="divider"></div>
+      <h2>GET</h2>
+      <p class="description">
+        Returns list of jobs created by registered company
+      </p>
+      <p>Path: <code>https://jobscamp-api.herokuapp.com/jobs/me</code></p>
+      <h3>Request headers</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th>Authorization</th>
+            <th>Required</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>Bearer token</td>
+            <td>Yes</td>
+            <td>Include with request headers</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>Parameters</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>sortBy</td>
+            <td>Optional</td>
+            <td>Ex: sortBy 'createdAt:desc', 'updatedAt:asc'</td>
+          </tr>
+          <tr>
+            <td>skip</td>
+            <td>Optional</td>
+            <td>Ex: Integer skip 1,2,3</td>
+          </tr>
+          <tr>
+            <td>limit</td>
+            <td>Optional</td>
+            <td>Ex: Integer limit 1,2,3</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Example:
+        <code>https://jobscamp-api.herokuapp.com/jobs/me?limit=10&skip=5</code>
+      </p>
+      <div class="divider"></div>
+      <h2>PATCH</h2>
+      <p class="description">
+        Update the job object.
+      </p>
+      <p>Path: <code>https://jobscamp-api.herokuapp.com/jobs/:id</code></p>
+      <h3>Request headers</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th>Authorization</th>
+            <th>Required</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>Bearer token</td>
+            <td>Yes</td>
+            <td>Include token with the request header</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>Parameters</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th>ID</th>
+            <th>Required</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>ObjectID</td>
+            <td>Yes</td>
+            <td>String</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Example: <code>https://jobscamp-api.herokuapp.com/jobs/${id}</code></p>
+      <div class="divider"></div>
+      <h2>DELETE</h2>
+      <p class="description">Delete the job object.</p>
+      <p>Path: <code>https://jobscamp-api.herokuapp.com/jobs/:id</code></p>
+      <h3>Request headers</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th>Authorization</th>
+            <th>Required</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>Bearer token</td>
+            <td>Yes</td>
+            <td>Include token with the request header</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>Parameters</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th>ID</th>
+            <th>Required</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>ObjectID</td>
+            <td>Yes</td>
+            <td>String</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="divider"></div>
+      <h2>POST</h2>
+      <p class="description">
+        Create new company. It returns authorization token along with the
+        company object.
+      </p>
+      <p>Path: <code>https://jobscamp-api.herokuapp.com/companies</code></p>
+      <h3>Request Body</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Required</th>
+          </tr>
+          <tr>
+            <td>name</td>
+            <td>String</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>email</td>
+            <td>String</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>password</td>
+            <td>String</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>logo</td>
+            <td>Buffer</td>
+            <td>Optional</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="divider"></div>
+      <h2>GET</h2>
+      <p class="description">Returns list of registered companies</p>
+      <p>Path: <code>https://jobscamp-api.herokuapp.com/companies</code></p>
+      <h3>Request headers</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th>Authorization</th>
+            <th>Required</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>Bearer token</td>
+            <td>Yes</td>
+            <td>Include token with the request header</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="divider"></div>
+      <h2>PATCH</h2>
+      <p class="description">
+        Update the company object.
+      </p>
+      <p>Path: <code>https://jobscamp-api.herokuapp.com/companies/me</code></p>
+      <h3>Request headers</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th>Authorization</th>
+            <th>Required</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>Bearer token</td>
+            <td>Yes</td>
+            <td>Include token with the request header</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="divider"></div>
+      <h2>DELETE</h2>
+      <p class="description">Delete the company object.</p>
+      <p>Path: <code>https://jobscamp-api.herokuapp.com/companies/me</code></p>
+      <h3>Request headers</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th>Authorization</th>
+            <th>Required</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>Bearer token</td>
+            <td>Yes</td>
+            <td>Include token with the request header</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>
