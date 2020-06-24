@@ -3,6 +3,7 @@ const Company = require("../models/company");
 const router = new express.Router();
 const multer = require("multer");
 const sharp = require("sharp");
+const auth = require("../middleware/auth");
 
 const upload = multer({
   // file destination
@@ -20,16 +21,57 @@ const upload = multer({
   },
 });
 
+// Create new company
 router.post("/companies", async (req, res) => {
   const company = new Company(req.body);
   try {
     await company.save();
-    res.status(201).send();
+    const token = await company.generateAuthToken();
+    res.status(201).send({ company, token });
   } catch (error) {
     res.status(400).send(error);
   }
 });
 
+// Login using credentials
+router.post("/companies/login", async (req, res) => {
+  try {
+    const company = await Company.findByCredentials(
+      req.body.email,
+      req.body.password
+    );
+    const token = await company.generateAuthToken();
+    res.status(202).send({ company, token });
+  } catch (error) {
+    res.status(401).send();
+  }
+});
+
+// Logout company
+router.post("/companies/logout", auth, async (req, res) => {
+  try {
+    req.company.tokens = req.company.tokens.filter(
+      (token) => token.token !== req.token
+    );
+    await req.company.save();
+    res.send();
+  } catch (error) {
+    res.status(500).send();
+  }
+});
+
+// Logout all devices
+router.post("/companies/logoutAll", auth, async (req, res) => {
+  try {
+    req.company.tokens = [];
+    await req.company.save();
+    res.send();
+  } catch (error) {
+    res.status(500).send();
+  }
+});
+
+// Upload company logo
 router.post("/companies/:id/logo", upload.single("logo"), async (req, res) => {
   const buffer = await sharp(req.file.buffer)
     .resize({ width: 250, height: 250 })
@@ -44,7 +86,7 @@ router.post("/companies/:id/logo", upload.single("logo"), async (req, res) => {
     res.status(400).send(error);
   }
 });
-
+// Generate company logo url
 router.get("/companies/:id/logo", async (req, res) => {
   try {
     const company = await Company.findById(req.params.id);
@@ -57,7 +99,7 @@ router.get("/companies/:id/logo", async (req, res) => {
     res.status(404).send();
   }
 });
-
+// GET all registered companies
 router.get("/companies", async (req, res) => {
   try {
     const companies = await Company.find({});
@@ -66,7 +108,7 @@ router.get("/companies", async (req, res) => {
     res.status(404).send();
   }
 });
-
+// DELETE company
 router.delete("/companies/:id", async (req, res) => {
   try {
     const company = await Company.findByIdAndDelete(req.params.id);
@@ -76,7 +118,7 @@ router.delete("/companies/:id", async (req, res) => {
     res.status(400).send(error);
   }
 });
-
+// EDIT company
 router.patch("/companies/:id", async (req, res) => {
   // const updates = Object.keys(req.body);
   // const allowedUpdates = ['name', 'email', 'password'];

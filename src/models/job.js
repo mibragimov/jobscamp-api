@@ -14,9 +14,7 @@ const jobSchema = new mongoose.Schema(
     },
     skills: [
       {
-        skill: {
-          type: String,
-        },
+        type: String,
       },
     ],
     location: {
@@ -25,12 +23,16 @@ const jobSchema = new mongoose.Schema(
       trim: true,
     },
     featured: {
-      type: String,
+      type: Boolean,
       default: false,
+    },
+    new: {
+      type: Boolean,
+      default: true,
     },
     company: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      // required: true,
       ref: "Company",
     },
   },
