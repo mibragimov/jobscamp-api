@@ -72,20 +72,24 @@ router.post("/companies/logoutAll", auth, async (req, res) => {
 });
 
 // Upload company logo
-router.post("/companies/:id/logo", upload.single("logo"), async (req, res) => {
-  const buffer = await sharp(req.file.buffer)
-    .resize({ width: 250, height: 250 })
-    .png()
-    .toBuffer();
-  try {
-    const company = await Company.findById(req.params.id);
-    company.logo = buffer;
-    await company.save();
-    res.send();
-  } catch (error) {
-    res.status(400).send(error);
+router.post(
+  "/companies/me/logo",
+  auth,
+  upload.single("logo"),
+  async (req, res) => {
+    const buffer = await sharp(req.file.buffer)
+      .resize({ width: 250, height: 250 })
+      .png()
+      .toBuffer();
+    try {
+      req.company.logo = buffer;
+      await req.company.save();
+      res.send();
+    } catch (error) {
+      res.status(400).send(error);
+    }
   }
-});
+);
 // Generate company logo url
 router.get("/companies/:id/logo", async (req, res) => {
   try {
@@ -99,8 +103,20 @@ router.get("/companies/:id/logo", async (req, res) => {
     res.status(404).send();
   }
 });
+
+// Delete company logo
+router.delete("/companies/me/logo", auth, async (req, res) => {
+  try {
+    req.company.logo = undefined;
+    await req.company.save();
+    res.send();
+  } catch (error) {
+    res.status(400).send();
+  }
+});
+
 // GET all registered companies
-router.get("/companies", async (req, res) => {
+router.get("/companies", auth, async (req, res) => {
   try {
     const companies = await Company.find({});
     res.send(companies);
@@ -109,33 +125,36 @@ router.get("/companies", async (req, res) => {
   }
 });
 // DELETE company
-router.delete("/companies/:id", async (req, res) => {
+router.delete("/companies/me", auth, async (req, res) => {
   try {
-    const company = await Company.findByIdAndDelete(req.params.id);
-
-    res.send(company);
+    //const company = await Company.findByIdAndDelete(req.params.id);
+    await req.company.remove();
+    res.send(req.company);
   } catch (error) {
     res.status(400).send(error);
   }
 });
 // EDIT company
-router.patch("/companies/:id", async (req, res) => {
-  // const updates = Object.keys(req.body);
-  // const allowedUpdates = ['name', 'email', 'password'];
-  // const isValidUpdate = updates.every(update => allowedUpdates.includes(update));
+router.patch("/companies/me", auth, async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ["name", "email", "password"];
+  const isValidUpdate = updates.every((update) =>
+    allowedUpdates.includes(update)
+  );
 
-  // if (!isValidUpdate) {
-  //     return res.status(404).send({ error: 'Invalid update' })
-  // }
+  if (!isValidUpdate) {
+    return res.status(404).send({ error: "Invalid update" });
+  }
   try {
-    //    updates.forEach(update => {
-    //        req.user[update] = req.body[update]
-    //    })
-    const company = await Company.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
+    updates.forEach((update) => {
+      req.company[update] = req.body[update];
     });
-    res.send(company);
+    // const company = await Company.findByIdAndUpdate(req.params.id, req.body, {
+    //   new: true,
+    //   runValidators: true,
+    // });
+    await req.company.save();
+    res.send(req.company);
   } catch (error) {
     res.status(400).send();
   }
