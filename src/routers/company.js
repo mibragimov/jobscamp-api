@@ -46,9 +46,9 @@ router.post("/companies/login", async (req, res) => {
       req.body.password
     );
     const token = await company.generateAuthToken();
-    res.status(202).send({ company, token });
+    res.status(200).send({ company, token });
   } catch (error) {
-    res.status(401).send();
+    res.status(400).send();
   }
 });
 
