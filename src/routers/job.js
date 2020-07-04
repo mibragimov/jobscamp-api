@@ -54,7 +54,7 @@ router.get("/jobs/me", auth, async (req, res) => {
 
 router.get("/jobs", async (req, res) => {
   try {
-    const jobs = await Job.find({});
+    const jobs = await Job.find({}).sort({ createdAt: -1 });
     res.send(jobs);
   } catch (error) {
     res.status(404).send();
