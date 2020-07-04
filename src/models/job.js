@@ -35,6 +35,13 @@ const jobSchema = new mongoose.Schema(
       required: true,
       ref: "Company",
     },
+    company: {
+      type: String,
+      required: true,
+    },
+    logo: {
+      type: Buffer,
+    },
   },
   {
     timestamps: true,

@@ -8,6 +8,8 @@ router.post("/jobs", auth, async (req, res) => {
   const job = new Job({
     ...req.body,
     owner: req.company._id,
+    company: req.company.name,
+    logo: req.company.logo,
   });
 
   try {
