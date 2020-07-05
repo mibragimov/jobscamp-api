@@ -54,7 +54,7 @@ router.get("/jobs/me", auth, async (req, res) => {
 // GET all jobs
 
 router.get("/jobs", async (req, res) => {
-  const { role, skills, company, sortBy } = req.query;
+  const { role, skills, company, sortBy = "createdAt:desc" } = req.query;
   const queryObj = {};
   const sortObj = {};
   if (role) {
@@ -69,7 +69,7 @@ router.get("/jobs", async (req, res) => {
 
   if (sortBy) {
     const parts = sortBy.split(":");
-    sortObj[parts[0]] = parts[1] === "asc" ? 1 : -1;
+    sortObj[parts[0]] = parts[1] === "desc" ? -1 : 1;
   }
   try {
     const jobs = await Job.find(queryObj).sort(sortObj);
