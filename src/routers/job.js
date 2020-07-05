@@ -9,7 +9,6 @@ router.post("/jobs", auth, async (req, res) => {
     ...req.body,
     owner: req.company._id,
     company: req.company.name,
-    logo: req.company.logo,
   });
 
   try {
@@ -55,8 +54,19 @@ router.get("/jobs/me", auth, async (req, res) => {
 // GET all jobs
 
 router.get("/jobs", async (req, res) => {
+  const { role, skills, company } = req.query;
+  const queryObj = {};
+  if (role) {
+    queryObj.role = { $regex: role, $options: "i" };
+  }
+  if (skills) {
+    queryObj.skills = { $regex: skills, $options: "i" };
+  }
+  if (company) {
+    queryObj.company = { $regex: company, $options: "i" };
+  }
   try {
-    const jobs = await Job.find({}).sort({ createdAt: -1 });
+    const jobs = await Job.find(queryObj).sort({ createdAt: -1 });
     res.send(jobs);
   } catch (error) {
     res.status(404).send();
