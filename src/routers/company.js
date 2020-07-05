@@ -129,6 +129,14 @@ router.get("/companies", auth, async (req, res) => {
     res.status(404).send();
   }
 });
+// GET company
+router.get("/companies/me", auth, async (req, res) => {
+  try {
+    res.send(req.company);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
 // DELETE company
 router.delete("/companies/me", auth, async (req, res) => {
   try {

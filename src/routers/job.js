@@ -54,7 +54,7 @@ router.get("/jobs/me", auth, async (req, res) => {
 // GET all jobs
 
 router.get("/jobs", async (req, res) => {
-  const { role, skills, company, sortBy = "createdAt:desc" } = req.query;
+  const { role, skills, company, sortBy } = req.query;
   const queryObj = {};
   const sortObj = {};
   if (role) {
