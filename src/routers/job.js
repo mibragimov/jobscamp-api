@@ -24,12 +24,24 @@ router.post("/jobs", auth, async (req, res) => {
 // query = skip ===> integer, 1,2,3
 // query = sortBy ====> string exp 'createdAt:desc' or 'createdAt_asc'
 router.get("/jobs/me", auth, async (req, res) => {
+  const { role, skills, company, sortBy } = req.query;
   const sort = {};
+  const match = {};
   //const match = {};
 
-  if (req.query.sortBy) {
-    const parts = req.query.sortBy.split(":");
+  if (sortBy) {
+    const parts = sortBy.split(":");
     sort[parts[0]] = parts[1] === "desc" ? -1 : 1;
+  }
+
+  if (role) {
+    match.role = { $regex: role, $options: "i" };
+  }
+  if (skills) {
+    match.skills = { $regex: skills, $options: "i" };
+  }
+  if (company) {
+    match.company = { $regex: company, $options: "i" };
   }
 
   try {
@@ -37,6 +49,7 @@ router.get("/jobs/me", auth, async (req, res) => {
     await req.company
       .populate({
         path: "jobs",
+        match,
         options: {
           limit: parseInt(req.query.limit),
           skip: parseInt(req.query.skip),
